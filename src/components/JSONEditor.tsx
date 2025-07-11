@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import Editor from '@monaco-editor/react';
-import { TreeView } from './TreeView';
-import { formatJSON, isValidJSON, type ViewMode } from '@/lib/storage';
-import { AlertCircle, CheckCircle, Code, TreePine } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import {TreeView} from './TreeView';
+import {formatJSON, isValidJSON, type ViewMode} from '@/lib/storage';
+import {AlertCircle, CheckCircle, Code, TreePine} from 'lucide-react';
+import {cn} from '@/lib/utils';
 
 interface JSONEditorProps {
   value: string;
@@ -12,7 +12,7 @@ interface JSONEditorProps {
   viewMode: ViewMode;
 }
 
-export function JSONEditor({ value, onChange, theme, viewMode }: JSONEditorProps) {
+export function JSONEditor({value, onChange, theme, viewMode}: JSONEditorProps) {
   const [isValid, setIsValid] = useState(true);
   const editorRef = useRef<any>(null);
 
@@ -29,7 +29,7 @@ export function JSONEditor({ value, onChange, theme, viewMode }: JSONEditorProps
 
   const handleEditorDidMount = (editor: any) => {
     editorRef.current = editor;
-    
+
     // Auto-format action (accessible via command palette)
     editor.addAction({
       id: 'format-json',
@@ -58,29 +58,29 @@ export function JSONEditor({ value, onChange, theme, viewMode }: JSONEditorProps
           {/* View Mode Indicator */}
           <div className="flex items-center gap-1 mr-2">
             {viewMode === 'code' ? (
-              <Code className="w-4 h-4 text-blue-600" />
+              <Code className="w-4 h-4 text-blue-600"/>
             ) : (
-              <TreePine className="w-4 h-4 text-green-600" />
+              <TreePine className="w-4 h-4 text-green-600"/>
             )}
             <span className={cn('text-xs font-medium', headerTextClass)}>
               {viewMode === 'code' ? 'Code View' : 'Tree View'}
             </span>
           </div>
-          
+
           {/* Validation Status */}
           {isValid ? (
             <>
-              <CheckCircle className="w-4 h-4 text-green-600" />
+              <CheckCircle className="w-4 h-4 text-green-600"/>
               <span className="text-sm text-green-700">Valid JSON</span>
             </>
           ) : (
             <>
-              <AlertCircle className="w-4 h-4 text-red-600" />
+              <AlertCircle className="w-4 h-4 text-red-600"/>
               <span className="text-sm text-red-700">Invalid JSON</span>
             </>
           )}
         </div>
-        
+
         <div className={cn('text-xs', headerTextClass)}>
           {viewMode === 'code' ? (
             <span>{value.split('\n').length} lines</span>
@@ -89,7 +89,7 @@ export function JSONEditor({ value, onChange, theme, viewMode }: JSONEditorProps
           )}
         </div>
       </div>
-      
+
       {/* Editor Content */}
       <div className="flex-1">
         {viewMode === 'code' ? (
@@ -101,7 +101,7 @@ export function JSONEditor({ value, onChange, theme, viewMode }: JSONEditorProps
             onMount={handleEditorDidMount}
             theme={theme}
             options={{
-              minimap: { enabled: false },
+              minimap: {enabled: false},
               fontSize: 14,
               fontFamily: 'Menlo, Monaco, "Courier New", monospace',
               lineNumbers: 'on',
@@ -123,7 +123,7 @@ export function JSONEditor({ value, onChange, theme, viewMode }: JSONEditorProps
             }}
           />
         ) : (
-          <TreeView value={value} theme={theme} />
+          <TreeView value={value} theme={theme}/>
         )}
       </div>
     </div>

@@ -1,24 +1,24 @@
-import { useState, useEffect, useCallback } from 'react';
-import { JSONEditor } from '@/components/JSONEditor';
-import { DocumentSelector } from '@/components/DocumentSelector';
-import { ThemeSelector } from '@/components/ThemeSelector';
-import { ViewToggle } from '@/components/ViewToggle';
+import {useCallback, useEffect, useState} from 'react';
+import {JSONEditor} from '@/components/JSONEditor';
+import {DocumentSelector} from '@/components/DocumentSelector';
+import {ThemeSelector} from '@/components/ThemeSelector';
+import {ViewToggle} from '@/components/ViewToggle';
 import {
-  getSavedDocuments,
-  saveDocument,
   deleteDocument,
-  getDocument,
-  getTheme,
-  setTheme,
-  getViewMode,
-  setViewMode,
-  generateId,
   formatJSON,
+  generateId,
+  getDocument,
+  getSavedDocuments,
+  getTheme,
+  getViewMode,
   type JSONDocument,
+  saveDocument,
+  setTheme,
+  setViewMode,
   type ViewMode
 } from '@/lib/storage';
-import { Button } from '@/components/ui/button';
-import { FileText, Download, Wand2 } from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {Download, FileText, Wand2} from 'lucide-react';
 
 function App() {
   const [documents, setDocuments] = useState<JSONDocument[]>([]);
@@ -33,11 +33,11 @@ function App() {
     const savedDocs = getSavedDocuments();
     const savedTheme = getTheme();
     const savedViewMode = getViewMode();
-    
+
     setDocuments(savedDocs);
     setEditorTheme(savedTheme);
     setViewModeState(savedViewMode);
-    
+
     // Load the most recently modified document or create a new one
     if (savedDocs.length > 0) {
       const mostRecent = savedDocs.sort((a, b) => b.lastModified - a.lastModified)[0];
@@ -63,26 +63,26 @@ function App() {
           "lineNumbers": true
         }
       }, null, 2);
-      
+
       const defaultDoc = {
         id: generateId(),
         name: 'Welcome Document',
         content: sampleContent
       };
-      
+
       const saved = saveDocument(defaultDoc);
       setDocuments([saved]);
       setCurrentDocumentId(saved.id);
       setCurrentContent(saved.content);
     }
-    
+
     setIsLoading(false);
   }, []);
 
   // Auto-save current content
   useEffect(() => {
     if (!currentDocumentId || isLoading) return;
-    
+
     const timeoutId = setTimeout(() => {
       const currentDoc = documents.find(doc => doc.id === currentDocumentId);
       if (currentDoc && currentDoc.content !== currentContent) {
@@ -90,13 +90,13 @@ function App() {
           ...currentDoc,
           content: currentContent
         });
-        
-        setDocuments(prev => 
+
+        setDocuments(prev =>
           prev.map(doc => doc.id === currentDocumentId ? updatedDoc : doc)
         );
       }
     }, 500); // Auto-save after 500ms of inactivity
-    
+
     return () => clearTimeout(timeoutId);
   }, [currentContent, currentDocumentId, documents, isLoading]);
 
@@ -114,7 +114,7 @@ function App() {
       name,
       content: '{}'
     };
-    
+
     const saved = saveDocument(newDoc);
     setDocuments(prev => [...prev, saved]);
     setCurrentDocumentId(saved.id);
@@ -124,7 +124,7 @@ function App() {
   const handleDeleteDocument = useCallback((id: string) => {
     deleteDocument(id);
     setDocuments(prev => prev.filter(doc => doc.id !== id));
-    
+
     if (currentDocumentId === id) {
       const remaining = documents.filter(doc => doc.id !== id);
       if (remaining.length > 0) {
@@ -158,8 +158,8 @@ function App() {
   const handleDownloadJSON = useCallback(() => {
     const currentDoc = documents.find(doc => doc.id === currentDocumentId);
     if (!currentDoc) return;
-    
-    const blob = new Blob([currentContent], { type: 'application/json' });
+
+    const blob = new Blob([currentContent], {type: 'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -187,18 +187,18 @@ function App() {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <FileText className="w-8 h-8 text-blue-600" />
+              <FileText className="w-8 h-8 text-blue-600"/>
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">JSON Editor</h1>
                 <p className="text-gray-600">Comprehensive JSON viewer, formatter, and editor</p>
               </div>
             </div>
-            <ThemeSelector 
-              currentTheme={editorTheme} 
-              onThemeChange={handleThemeChange} 
+            <ThemeSelector
+              currentTheme={editorTheme}
+              onThemeChange={handleThemeChange}
             />
           </div>
-          
+
           {/* Toolbar */}
           <div className="flex items-center justify-between gap-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
             <DocumentSelector
@@ -208,34 +208,34 @@ function App() {
               onNewDocument={handleNewDocument}
               onDeleteDocument={handleDeleteDocument}
             />
-            
+
             <div className="flex items-center gap-3">
               <ViewToggle
                 viewMode={viewMode}
                 onViewModeChange={handleViewModeChange}
                 disabled={isLoading}
               />
-              
-              <div className="h-6 w-px bg-gray-300" />
-              
-              <Button 
-                onClick={handleFormatJSON} 
-                variant="outline" 
+
+              <div className="h-6 w-px bg-gray-300"/>
+
+              <Button
+                onClick={handleFormatJSON}
+                variant="outline"
                 size="sm"
                 disabled={!currentContent.trim() || viewMode === 'tree'}
                 title={viewMode === 'tree' ? 'Switch to Code View to format JSON' : 'Format JSON'}
               >
-                <Wand2 className="w-4 h-4 mr-1" />
+                <Wand2 className="w-4 h-4 mr-1"/>
                 Format
               </Button>
-              
-              <Button 
-                onClick={handleDownloadJSON} 
-                variant="outline" 
+
+              <Button
+                onClick={handleDownloadJSON}
+                variant="outline"
                 size="sm"
                 disabled={!currentContent.trim()}
               >
-                <Download className="w-4 h-4 mr-1" />
+                <Download className="w-4 h-4 mr-1"/>
                 Download
               </Button>
             </div>
@@ -243,7 +243,7 @@ function App() {
         </div>
 
         {/* Editor */}
-        <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden" style={{ height: 'calc(100vh - 280px)' }}>
+        <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden" style={{height: 'calc(100vh - 280px)'}}>
           <div className="h-full flex flex-col">
             {currentDocument && (
               <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 text-sm text-gray-600">

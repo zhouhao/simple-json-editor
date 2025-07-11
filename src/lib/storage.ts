@@ -27,12 +27,12 @@ export function getSavedDocuments(): JSONDocument[] {
 export function saveDocument(doc: Omit<JSONDocument, 'lastModified'>): JSONDocument {
   const documents = getSavedDocuments();
   const existingIndex = documents.findIndex(d => d.id === doc.id);
-  
+
   const savedDoc: JSONDocument = {
     ...doc,
     lastModified: Date.now()
   };
-  
+
   if (existingIndex >= 0) {
     documents[existingIndex] = savedDoc;
   } else {
@@ -43,7 +43,7 @@ export function saveDocument(doc: Omit<JSONDocument, 'lastModified'>): JSONDocum
     }
     documents.push(savedDoc);
   }
-  
+
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(documents));
     return savedDoc;

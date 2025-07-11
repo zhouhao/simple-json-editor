@@ -1,12 +1,6 @@
-import { useState } from 'react';
-import { JSONDocument } from '@/lib/storage';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import {useState} from 'react';
+import {JSONDocument} from '@/lib/storage';
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from '@/components/ui/select';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,9 +11,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Trash2, Plus, File } from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {File, Plus, Trash2} from 'lucide-react';
 
 interface DocumentSelectorProps {
   documents: JSONDocument[];
@@ -30,12 +24,12 @@ interface DocumentSelectorProps {
 }
 
 export function DocumentSelector({
-  documents,
-  currentDocumentId,
-  onDocumentSelect,
-  onNewDocument,
-  onDeleteDocument
-}: DocumentSelectorProps) {
+                                   documents,
+                                   currentDocumentId,
+                                   onDocumentSelect,
+                                   onNewDocument,
+                                   onDeleteDocument
+                                 }: DocumentSelectorProps) {
   const [showNewDialog, setShowNewDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteDocumentId, setDeleteDocumentId] = useState<string | null>(null);
@@ -77,7 +71,7 @@ export function DocumentSelector({
             <SelectValue placeholder="Select a document">
               {currentDocument ? (
                 <div className="flex items-center gap-2">
-                  <File className="w-4 h-4" />
+                  <File className="w-4 h-4"/>
                   {currentDocument.name}
                 </div>
               ) : (
@@ -90,7 +84,7 @@ export function DocumentSelector({
               <SelectItem key={doc.id} value={doc.id}>
                 <div className="flex items-center justify-between w-full group">
                   <div className="flex items-center gap-2">
-                    <File className="w-4 h-4" />
+                    <File className="w-4 h-4"/>
                     <span>{doc.name}</span>
                   </div>
                   <Button
@@ -99,7 +93,7 @@ export function DocumentSelector({
                     className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 ml-2"
                     onClick={(e) => handleDeleteClick(e, doc.id)}
                   >
-                    <Trash2 className="w-3 h-3" />
+                    <Trash2 className="w-3 h-3"/>
                   </Button>
                 </div>
               </SelectItem>
@@ -111,17 +105,17 @@ export function DocumentSelector({
             )}
           </SelectContent>
         </Select>
-        
+
         <Button
           onClick={() => setShowNewDialog(true)}
           disabled={!canCreateNew}
           size="sm"
           className="shrink-0"
         >
-          <Plus className="w-4 h-4 mr-1" />
+          <Plus className="w-4 h-4 mr-1"/>
           New
         </Button>
-        
+
         {!canCreateNew && (
           <span className="text-xs text-gray-500">Max 10 documents</span>
         )}
@@ -151,7 +145,7 @@ export function DocumentSelector({
               setNewDocumentName('');
               setShowNewDialog(false);
             }}>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleNewDocument}
               disabled={!newDocumentName.trim()}
             >
@@ -172,7 +166,7 @@ export function DocumentSelector({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleDeleteConfirm}
               className="bg-red-600 hover:bg-red-700"
             >

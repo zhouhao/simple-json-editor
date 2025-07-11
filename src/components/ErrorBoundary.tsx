@@ -13,11 +13,11 @@ export class ErrorBoundary extends React.Component<
 > {
   constructor(props: { children: React.ReactNode }) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = {hasError: false, error: null};
   }
 
   static getDerivedStateFromError(error: any) {
-    return { hasError: true, error };
+    return {hasError: true, error};
   }
 
   render() {
