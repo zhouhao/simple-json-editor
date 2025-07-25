@@ -11,6 +11,7 @@ import {
   getSavedDocuments,
   getTheme,
   getViewMode,
+  isValidJSON,
   type JSONDocument,
   saveDocument,
   setTheme,
@@ -18,7 +19,7 @@ import {
   type ViewMode
 } from '@/lib/storage';
 import {Button} from '@/components/ui/button';
-import {Download, FileText, Wand2} from 'lucide-react';
+import {Download, FileText, Upload, Wand2} from 'lucide-react';
 
 function App() {
   const [documents, setDocuments] = useState<JSONDocument[]>([]);
@@ -170,6 +171,61 @@ function App() {
     URL.revokeObjectURL(url);
   }, [currentContent, currentDocumentId, documents]);
 
+  const handleImportJSON = useCallback(() => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,application/json';
+    input.onchange = (event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const content = e.target?.result as string;
+          if (!content) {
+            alert('Error: Could not read file content');
+            return;
+          }
+
+          // Validate JSON
+          if (!isValidJSON(content)) {
+            alert('Error: Invalid JSON file. Please select a valid JSON file.');
+            return;
+          }
+
+          // Format the JSON content
+          const formattedContent = formatJSON(content);
+
+          // Create a new document with the imported content
+          const fileName = file.name.replace(/\.json$/i, '');
+          const newDoc = {
+            id: generateId(),
+            name: fileName || 'Imported Document',
+            content: formattedContent
+          };
+
+          const saved = saveDocument(newDoc);
+          setDocuments(prev => [...prev, saved]);
+          setCurrentDocumentId(saved.id);
+          setCurrentContent(saved.content);
+
+        } catch (error) {
+          console.error('Error importing JSON:', error);
+          alert('Error: Failed to import JSON file. Please try again.');
+        }
+      };
+
+      reader.onerror = () => {
+        alert('Error: Failed to read the selected file.');
+      };
+
+      reader.readAsText(file);
+    };
+
+    input.click();
+  }, []);
+
   const currentDocument = documents.find(doc => doc.id === currentDocumentId);
 
   if (isLoading) {
@@ -227,6 +283,16 @@ function App() {
               >
                 <Wand2 className="w-4 h-4 mr-1"/>
                 Format
+              </Button>
+
+              <Button
+                onClick={handleImportJSON}
+                variant="outline"
+                size="sm"
+                title="Import JSON file"
+              >
+                <Upload className="w-4 h-4 mr-1"/>
+                Import
               </Button>
 
               <Button
