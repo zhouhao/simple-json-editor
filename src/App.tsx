@@ -19,7 +19,7 @@ import {
   type ViewMode,
 } from "@/lib/storage";
 import { Button } from "@/components/ui/button";
-import { Download, FileText, Upload, Wand2 } from "lucide-react";
+import { Download, Upload, Wand2 } from "lucide-react";
 
 function App() {
   const [documents, setDocuments] = useState<JSONDocument[]>([]);
@@ -253,7 +253,7 @@ function App() {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <FileText className="w-8 h-8 text-blue-600" />
+              <img src="/logo.svg" alt="JSON Editor" className="w-10 h-10" />
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">
                   JSON Editor
