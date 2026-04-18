@@ -1,8 +1,8 @@
-import {useCallback, useEffect, useState} from 'react';
-import {JSONEditor} from '@/components/JSONEditor';
-import {DocumentSelector} from '@/components/DocumentSelector';
-import {ThemeSelector} from '@/components/ThemeSelector';
-import {ViewToggle} from '@/components/ViewToggle';
+import { useCallback, useEffect, useState } from "react";
+import { JSONEditor } from "@/components/JSONEditor";
+import { DocumentSelector } from "@/components/DocumentSelector";
+import { ThemeSelector } from "@/components/ThemeSelector";
+import { ViewToggle } from "@/components/ViewToggle";
 import {
   deleteDocument,
   formatJSON,
@@ -16,17 +16,19 @@ import {
   saveDocument,
   setTheme,
   setViewMode,
-  type ViewMode
-} from '@/lib/storage';
-import {Button} from '@/components/ui/button';
-import {Download, FileText, Upload, Wand2} from 'lucide-react';
+  type ViewMode,
+} from "@/lib/storage";
+import { Button } from "@/components/ui/button";
+import { Download, FileText, Upload, Wand2 } from "lucide-react";
 
 function App() {
   const [documents, setDocuments] = useState<JSONDocument[]>([]);
-  const [currentDocumentId, setCurrentDocumentId] = useState<string | null>(null);
-  const [currentContent, setCurrentContent] = useState('');
-  const [editorTheme, setEditorTheme] = useState('vs-dark');
-  const [viewMode, setViewModeState] = useState<ViewMode>('code');
+  const [currentDocumentId, setCurrentDocumentId] = useState<string | null>(
+    null,
+  );
+  const [currentContent, setCurrentContent] = useState("");
+  const [editorTheme, setEditorTheme] = useState("vs-dark");
+  const [viewMode, setViewModeState] = useState<ViewMode>("code");
   const [isLoading, setIsLoading] = useState(true);
 
   // Load initial data
@@ -41,34 +43,40 @@ function App() {
 
     // Load the most recently modified document or create a new one
     if (savedDocs.length > 0) {
-      const mostRecent = savedDocs.sort((a, b) => b.lastModified - a.lastModified)[0];
+      const mostRecent = savedDocs.sort(
+        (a, b) => b.lastModified - a.lastModified,
+      )[0];
       setCurrentDocumentId(mostRecent.id);
       setCurrentContent(mostRecent.content);
     } else {
       // Create a default document with sample JSON
-      const sampleContent = JSON.stringify({
-        "name": "JSON Editor",
-        "version": "1.0.0",
-        "description": "A comprehensive JSON viewer, formatter, and editor",
-        "features": [
-          "Syntax highlighting",
-          "Real-time validation",
-          "Auto-formatting",
-          "Local storage persistence",
-          "Multiple themes",
-          "Document management"
-        ],
-        "settings": {
-          "theme": "dark",
-          "autoSave": true,
-          "lineNumbers": true
-        }
-      }, null, 2);
+      const sampleContent = JSON.stringify(
+        {
+          name: "JSON Editor",
+          version: "1.0.0",
+          description: "A comprehensive JSON viewer, formatter, and editor",
+          features: [
+            "Syntax highlighting",
+            "Real-time validation",
+            "Auto-formatting",
+            "Local storage persistence",
+            "Multiple themes",
+            "Document management",
+          ],
+          settings: {
+            theme: "dark",
+            autoSave: true,
+            lineNumbers: true,
+          },
+        },
+        null,
+        2,
+      );
 
       const defaultDoc = {
         id: generateId(),
-        name: 'Welcome Document',
-        content: sampleContent
+        name: "Welcome Document",
+        content: sampleContent,
       };
 
       const saved = saveDocument(defaultDoc);
@@ -85,15 +93,15 @@ function App() {
     if (!currentDocumentId || isLoading) return;
 
     const timeoutId = setTimeout(() => {
-      const currentDoc = documents.find(doc => doc.id === currentDocumentId);
+      const currentDoc = documents.find((doc) => doc.id === currentDocumentId);
       if (currentDoc && currentDoc.content !== currentContent) {
         const updatedDoc = saveDocument({
           ...currentDoc,
-          content: currentContent
+          content: currentContent,
         });
 
-        setDocuments(prev =>
-          prev.map(doc => doc.id === currentDocumentId ? updatedDoc : doc)
+        setDocuments((prev) =>
+          prev.map((doc) => (doc.id === currentDocumentId ? updatedDoc : doc)),
         );
       }
     }, 500); // Auto-save after 500ms of inactivity
@@ -113,31 +121,34 @@ function App() {
     const newDoc = {
       id: generateId(),
       name,
-      content: '{}'
+      content: "{}",
     };
 
     const saved = saveDocument(newDoc);
-    setDocuments(prev => [...prev, saved]);
+    setDocuments((prev) => [...prev, saved]);
     setCurrentDocumentId(saved.id);
     setCurrentContent(saved.content);
   }, []);
 
-  const handleDeleteDocument = useCallback((id: string) => {
-    deleteDocument(id);
-    setDocuments(prev => prev.filter(doc => doc.id !== id));
+  const handleDeleteDocument = useCallback(
+    (id: string) => {
+      deleteDocument(id);
+      setDocuments((prev) => prev.filter((doc) => doc.id !== id));
 
-    if (currentDocumentId === id) {
-      const remaining = documents.filter(doc => doc.id !== id);
-      if (remaining.length > 0) {
-        const nextDoc = remaining[0];
-        setCurrentDocumentId(nextDoc.id);
-        setCurrentContent(nextDoc.content);
-      } else {
-        // Create a new document if no documents remain
-        handleNewDocument('New Document');
+      if (currentDocumentId === id) {
+        const remaining = documents.filter((doc) => doc.id !== id);
+        if (remaining.length > 0) {
+          const nextDoc = remaining[0];
+          setCurrentDocumentId(nextDoc.id);
+          setCurrentContent(nextDoc.content);
+        } else {
+          // Create a new document if no documents remain
+          handleNewDocument("New Document");
+        }
       }
-    }
-  }, [currentDocumentId, documents, handleNewDocument]);
+    },
+    [currentDocumentId, documents, handleNewDocument],
+  );
 
   const handleThemeChange = useCallback((theme: string) => {
     setTheme(theme);
@@ -157,14 +168,14 @@ function App() {
   }, [currentContent]);
 
   const handleDownloadJSON = useCallback(() => {
-    const currentDoc = documents.find(doc => doc.id === currentDocumentId);
+    const currentDoc = documents.find((doc) => doc.id === currentDocumentId);
     if (!currentDoc) return;
 
-    const blob = new Blob([currentContent], {type: 'application/json'});
+    const blob = new Blob([currentContent], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `${currentDoc.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.json`;
+    a.download = `${currentDoc.name.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -172,9 +183,9 @@ function App() {
   }, [currentContent, currentDocumentId, documents]);
 
   const handleImportJSON = useCallback(() => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json,application/json';
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json,application/json";
     input.onchange = (event) => {
       const file = (event.target as HTMLInputElement).files?.[0];
       if (!file) return;
@@ -184,13 +195,13 @@ function App() {
         try {
           const content = e.target?.result as string;
           if (!content) {
-            alert('Error: Could not read file content');
+            alert("Error: Could not read file content");
             return;
           }
 
           // Validate JSON
           if (!isValidJSON(content)) {
-            alert('Error: Invalid JSON file. Please select a valid JSON file.');
+            alert("Error: Invalid JSON file. Please select a valid JSON file.");
             return;
           }
 
@@ -198,26 +209,25 @@ function App() {
           const formattedContent = formatJSON(content);
 
           // Create a new document with the imported content
-          const fileName = file.name.replace(/\.json$/i, '');
+          const fileName = file.name.replace(/\.json$/i, "");
           const newDoc = {
             id: generateId(),
-            name: fileName || 'Imported Document',
-            content: formattedContent
+            name: fileName || "Imported Document",
+            content: formattedContent,
           };
 
           const saved = saveDocument(newDoc);
-          setDocuments(prev => [...prev, saved]);
+          setDocuments((prev) => [...prev, saved]);
           setCurrentDocumentId(saved.id);
           setCurrentContent(saved.content);
-
         } catch (error) {
-          console.error('Error importing JSON:', error);
-          alert('Error: Failed to import JSON file. Please try again.');
+          console.error("Error importing JSON:", error);
+          alert("Error: Failed to import JSON file. Please try again.");
         }
       };
 
       reader.onerror = () => {
-        alert('Error: Failed to read the selected file.');
+        alert("Error: Failed to read the selected file.");
       };
 
       reader.readAsText(file);
@@ -226,7 +236,7 @@ function App() {
     input.click();
   }, []);
 
-  const currentDocument = documents.find(doc => doc.id === currentDocumentId);
+  const currentDocument = documents.find((doc) => doc.id === currentDocumentId);
 
   if (isLoading) {
     return (
@@ -243,10 +253,14 @@ function App() {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <FileText className="w-8 h-8 text-blue-600"/>
+              <FileText className="w-8 h-8 text-blue-600" />
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">JSON Editor</h1>
-                <p className="text-gray-600">Comprehensive JSON viewer, formatter, and editor</p>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  JSON Editor
+                </h1>
+                <p className="text-gray-600">
+                  Comprehensive JSON viewer, formatter, and editor
+                </p>
               </div>
             </div>
             <ThemeSelector
@@ -272,16 +286,20 @@ function App() {
                 disabled={isLoading}
               />
 
-              <div className="h-6 w-px bg-gray-300"/>
+              <div className="h-6 w-px bg-gray-300" />
 
               <Button
                 onClick={handleFormatJSON}
                 variant="outline"
                 size="sm"
-                disabled={!currentContent.trim() || viewMode === 'tree'}
-                title={viewMode === 'tree' ? 'Switch to Code View to format JSON' : 'Format JSON'}
+                disabled={!currentContent.trim() || viewMode === "tree"}
+                title={
+                  viewMode === "tree"
+                    ? "Switch to Code View to format JSON"
+                    : "Format JSON"
+                }
               >
-                <Wand2 className="w-4 h-4 mr-1"/>
+                <Wand2 className="w-4 h-4 mr-1" />
                 Format
               </Button>
 
@@ -291,7 +309,7 @@ function App() {
                 size="sm"
                 title="Import JSON file"
               >
-                <Upload className="w-4 h-4 mr-1"/>
+                <Upload className="w-4 h-4 mr-1" />
                 Import
               </Button>
 
@@ -301,7 +319,7 @@ function App() {
                 size="sm"
                 disabled={!currentContent.trim()}
               >
-                <Download className="w-4 h-4 mr-1"/>
+                <Download className="w-4 h-4 mr-1" />
                 Download
               </Button>
             </div>
@@ -309,11 +327,19 @@ function App() {
         </div>
 
         {/* Editor */}
-        <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden" style={{height: 'calc(100vh - 280px)'}}>
+        <div
+          className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden"
+          style={
+            viewMode === "code"
+              ? { height: "calc(100vh - 280px)" }
+              : { minHeight: "calc(100vh - 280px)" }
+          }
+        >
           <div className="h-full flex flex-col">
             {currentDocument && (
               <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 text-sm text-gray-600">
-                Editing: <span className="font-medium">{currentDocument.name}</span>
+                Editing:{" "}
+                <span className="font-medium">{currentDocument.name}</span>
               </div>
             )}
             <JSONEditor
@@ -327,7 +353,10 @@ function App() {
 
         {/* Footer */}
         <footer className="mt-8 text-center text-sm text-gray-500">
-          <p>© 2025 JSON Editor. Built with React, TypeScript, and Monaco Editor. Features code editing and interactive tree view.</p>
+          <p>
+            © 2025 JSON Editor. Built with React, TypeScript, and Monaco Editor.
+            Features code editing and interactive tree view.
+          </p>
         </footer>
       </div>
     </div>
