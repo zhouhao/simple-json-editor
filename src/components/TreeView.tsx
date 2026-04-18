@@ -88,7 +88,7 @@ function TreeNode({
 
   const isDarkTheme = theme === "vs-dark" || theme === "hc-black";
   const bgClass = isDarkTheme
-    ? "bg-gray-900 text-gray-100"
+    ? "bg-[#1e1e1e] text-gray-100"
     : "bg-white text-gray-900";
   const hoverClass = isDarkTheme ? "hover:bg-gray-800" : "hover:bg-gray-50";
   const borderClass = isDarkTheme ? "border-gray-700" : "border-gray-200";
@@ -218,13 +218,13 @@ export function TreeView({ value, theme }: TreeViewProps) {
 
   const isDarkTheme = theme === "vs-dark" || theme === "hc-black";
   const bgClass = isDarkTheme
-    ? "bg-gray-900 text-gray-100"
+    ? "bg-[#1e1e1e] text-gray-100"
     : "bg-white text-gray-900";
 
   if (!isValid) {
     return (
       <div
-        className={cn("flex-1 flex items-center justify-center p-8", bgClass)}
+        className={cn("h-full flex items-center justify-center p-8", bgClass)}
       >
         <div className="text-center">
           <FileText className="w-12 h-12 text-red-500 mx-auto mb-4" />
@@ -241,7 +241,7 @@ export function TreeView({ value, theme }: TreeViewProps) {
   if (!value.trim() || parsedData === null) {
     return (
       <div
-        className={cn("flex-1 flex items-center justify-center p-8", bgClass)}
+        className={cn("h-full flex items-center justify-center p-8", bgClass)}
       >
         <div className="text-center">
           <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
@@ -255,7 +255,7 @@ export function TreeView({ value, theme }: TreeViewProps) {
   }
 
   return (
-    <div className={cn("flex-1 overflow-auto", bgClass)}>
+    <div className={cn("h-full overflow-auto", bgClass)}>
       <div className="p-2">
         <TreeNode data={parsedData} level={0} theme={theme} path="root" />
       </div>

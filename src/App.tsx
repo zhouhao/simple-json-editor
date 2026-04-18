@@ -329,11 +329,7 @@ function App() {
         {/* Editor */}
         <div
           className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden"
-          style={
-            viewMode === "code"
-              ? { height: "calc(100vh - 280px)" }
-              : { minHeight: "calc(100vh - 280px)" }
-          }
+          style={{ height: "calc(100vh - 280px)" }}
         >
           <div className="h-full flex flex-col">
             {currentDocument && (
